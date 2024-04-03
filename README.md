@@ -1,2 +1,2 @@
 # Sudoku.jl
-A Julia package to solve Sudoku puzzles
+A Julia package to solve Sudoku puzzles.
