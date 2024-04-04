@@ -26,13 +26,13 @@ Get the `(i, j)` sub-block matrix of `S`.
 
 ## Arguments
 - `S::Matrix{Int8}` -- A sudoku matrix.
-- `i::Int64`        -- The ``i^{i\\rm th}`` block row entry.
-- `j::Int64`        -- The ``j^{j\\rm th}`` block column entry.
+- `i::Int`        -- The ``i^{i\\rm th}`` block row entry.
+- `j::Int`        -- The ``j^{j\\rm th}`` block column entry.
 
 ## Return
 `::Matrix{Int8}` -- The ``(i^{\\rm th}, j^{\\rm th})`` sub-block matrix. 
 """
-function get_block(S::Matrix{Int8}, i::Int64, j::Int64)
+function get_block(S::Matrix{Int8}, i::Int, j::Int)
     S[SUDOKU_BLK_SIZE * (i-1) + 1:SUDOKU_BLK_SIZE * i, SUDOKU_BLK_SIZE * (j-1) + 1:SUDOKU_BLK_SIZE * j]
 end
 
@@ -54,7 +54,7 @@ julia> get_blk_idx(CaresianIndex(4, 6))
 ```
 
 ## Return
-`::Tuple{Int64, Int64}` -- The index pair of the sub-matrix block.
+`::Tuple{Int, Int}` -- The index pair of the sub-matrix block.
 """
 function get_blk_idx(h::CartesianIndex)
     (div(h[1]-1, SUDOKU_BLK_SIZE) + 1, div(h[2]-1, SUDOKU_BLK_SIZE) + 1)
@@ -186,7 +186,7 @@ Helper function that does the work of the top level solver.
 
 ## Arguments
 - `S::Matrix{Int8}`  -- A Sudoku puzzle matrix.
-- `rec_count::Int64` -- The count of the number of times this function has been called.
+- `rec_count::Int` -- The count of the number of times this function has been called.
 
 ## Keyword Arguments
 - `verbose::Bool=false` -- If `true`, print out extra information.
@@ -196,7 +196,7 @@ Helper function that does the work of the top level solver.
 - `ok::Bool` -- If `true`, a *proposed solution* was found.
 - `S::Matrix{Int8}}` -- A proposed, or inconsistent solution matrix.
 """
-function solve_sudoku(SP::Matrix{Int8}, rec_count::Int64; verbose::Bool=false)
+function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
     # We copy the input Sudoku matrix as this function mutates its values.
     S = copy(SP)
 
