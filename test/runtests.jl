@@ -1,7 +1,7 @@
 using Test
 using Sudoku
 
-@testset "Sudoku (Fidelity)" begin
+@testset "Sudoku (Fidelity)   " begin
     @test length(detect_ambiguities(Sudoku)) == 0
 end
 
