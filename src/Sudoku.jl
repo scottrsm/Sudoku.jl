@@ -26,8 +26,8 @@ Get the `(i, j)` sub-block matrix of `S`.
 
 ## Arguments
 - `S::Matrix{Int8}` -- A sudoku matrix.
-- `i::Int`        -- The ``i^{i\\rm th}`` block row entry.
-- `j::Int`        -- The ``j^{j\\rm th}`` block column entry.
+- `i::Int`          -- The ``i^{i\\rm th}`` block row entry.
+- `j::Int`          -- The ``j^{j\\rm th}`` block column entry.
 
 ## Return
 `::Matrix{Int8}` -- The ``(i^{\\rm th}, j^{\\rm th})`` sub-block matrix. 
@@ -186,15 +186,15 @@ Helper function that does the work of the top level solver.
 
 ## Arguments
 - `S::Matrix{Int8}`  -- A Sudoku puzzle matrix.
-- `rec_count::Int` -- The count of the number of times this function has been called.
+- `rec_count::Int`   -- The count of the number of times this function has been called.
 
 ## Keyword Arguments
 - `verbose::Bool=false` -- If `true`, print out extra information.
 
 ## Return 
 (ok, SS) 
-- `ok::Bool` -- If `true`, a *proposed solution* was found.
-- `S::Matrix{Int8}}` -- A proposed, or inconsistent solution matrix.
+- `ok::Bool`         -- If `true`, a *proposed solution* was found.
+- `S::Matrix{Int8}`  -- A proposed, or inconsistent solution matrix.
 """
 function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
     # We copy the input Sudoku matrix as this function mutates its values.
@@ -333,9 +333,9 @@ The value, `0`, is used in a puzzle matrix to represent a blank.
 
 ## Return 
 (ok, chk_sol, SS) 
-- `ok::Bool` -- If `true`, a *proposed solution* was found.
-- `chk_sol::Bool` -- If `true`, the proposed solution is *correct*. 
-- `SS::Matrix{Int8}}` -- A proposed, or inconsistent/incomplete solution matrix.
+- `ok::Bool`         -- If `true`, a *proposed solution* was found.
+- `chk_sol::Bool`    -- If `true`, the proposed solution is *correct*. 
+- `SS::Matrix{Int8}` -- A proposed, or inconsistent/incomplete solution matrix.
 """
 function solve_sudoku(SP::Matrix{Int8}; verbose::Bool=false) 
     (ok, SS) = solve_sudoku(SP, 1; verbose=verbose)
