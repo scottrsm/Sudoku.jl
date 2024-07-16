@@ -7,9 +7,10 @@ import DataFrames
 import OrderedCollections: OrderedDict
 
 
-# -------------------------------------------
-# -------   Module constants    -------------
-# -------------------------------------------
+#= ----------------------------------------
+-------   Module constants    -------------
+-------------------------------------------
+=#
 const SUDOKU_SIZE     ::Int8         = 9
 const SUDOKU_BLK_SIZE ::Int8         = 3
 const SUDOKU_INIT_VALS::Vector{Int8} = Int8[0,1,2,3,4,5,6,7,8,9]
@@ -24,12 +25,12 @@ MAX_RECUR_DEPTH=1
 
 Get the `(i, j)` sub-block matrix of `S`.
 
-## Arguments
+# Arguments
 - `S::Matrix{Int8}` -- A sudoku matrix.
 - `i::Int`          -- The ``i^{i\\rm th}`` block row entry.
 - `j::Int`          -- The ``j^{j\\rm th}`` block column entry.
 
-## Return
+# Return
 `::Matrix{Int8}` -- The ``(i^{\\rm th}, j^{\\rm th})`` sub-block matrix. 
 """
 function get_block(S::Matrix{Int8}, i::Int, j::Int)
@@ -42,10 +43,10 @@ end
 
 Get the sub-block index pair for a given index pair of a Sudoku matrix.
 
-## Arguments
+# Arguments
 - `h::CartesianIndex` -- The index into a Sudoku matrix.
 
-## Examples
+# Examples
 The code below gets the sub-block index pair, (2,2) (the index representing the middle 3x3 block matrix),
 when passed the Sudoku matrix index pair (4,6).
 ```jdoctest
@@ -53,7 +54,7 @@ julia> get_blk_idx(CaresianIndex(4, 6))
 (2,2)
 ```
 
-## Return
+# Return
 `::Tuple{Int, Int}` -- The index pair of the sub-matrix block.
 """
 function get_blk_idx(h::CartesianIndex)
@@ -73,12 +74,12 @@ It does this by doing the following:
 - Checks that the proposed solution is consistent
   with the puzzle matrix, `SP`. 
 
-## Arguments
+# Arguments
 - `SP::Matrix{Int8}` -- A Sudoku puzzle in matrix form.
                         Zeros represent blanks.
 - `SS::Matrix{Int8}` -- Proposed solution for `SP`.
 
-## Returns
+# Returns
 `::Bool` -- If `true`, the proposed solution is correct.
 """
 function check_sudoku_solution(SP, SS)
@@ -121,10 +122,10 @@ end
 
 Check if a vector/matrix has duplicate numeric (other than 0) entries.
 
-## Arguments
+# Arguments
 - `v :: Union{Vector{Int8}, Matrix{Int8}}`
 
-## Return
+# Return
 `::Bool` -- If `true` there exists at least one duplicate.
 """
 function has_dups(v::Union{Vector{Int8}, Matrix{Int8}})
@@ -146,11 +147,11 @@ Checks the consistency of a Sudoku matrix, `S`.
 This means that we check that there are no (non-zero)
 duplicate entries in any rows, columns, or sub-blocks.
 
-## Argumens
+# Argumens
 - `S::Matrix{Int8}` -- A Sudoku puzzle, proposed solution, or
                        intermediate solution.
 
-## Return
+# Return
 `::Bool` -- Returns `true` if Sudoku matrix is consistent.
 """
 function consist_chk(S)
@@ -184,14 +185,14 @@ end
 
 Helper function that does the work of the top level solver.
 
-## Arguments
+# Arguments
 - `S::Matrix{Int8}`  -- A Sudoku puzzle matrix.
 - `rec_count::Int`   -- The count of the number of times this function has been called.
 
-## Keyword Arguments
+# Keyword Arguments
 - `verbose::Bool=false` -- If `true`, print out extra information.
 
-## Return 
+# Return 
 (ok, SS) 
 - `ok::Bool`         -- If `true`, a *proposed solution* was found.
 - `S::Matrix{Int8}`  -- A proposed, or inconsistent solution matrix.
@@ -220,10 +221,11 @@ function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
     # solution values for each hole.
     dict = OrderedDict{CartesianIndex, Set{Int8}}()
 
-    # Here we do the naive filling of holes. These are cells which only
-    # have one possible entry to go in that slot.
-    # We break out of this loop, when the number of holes (0 entries)
-    # of `S` doesn't change from one loop to the next.
+    #= Here we do the naive filling of holes. These are cells which only
+       have one possible entry to go in that slot.
+       We break out of this loop, when the number of holes (0 entries)
+       of `S` doesn't change from one loop to the next.
+	=#
     while true 
         # Get the indices where there are unknowns.
         # See if we made any progress with naive filling.
@@ -274,10 +276,11 @@ function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
         end
     end
 
-    # At this point `last_num_holes == nholes` -- we have finished with the naive hole filling.
-    # We need to check for consistency -- no duplicates.
-    # This can happen after recursing; where we try out different potential 
-    # solutions for a given hole. 
+    #= At this point `last_num_holes == nholes` -- we have finished with the naive hole filling.
+       We need to check for consistency -- no duplicates.
+       This can happen after recursing; where we try out different potential 
+       solutions for a given hole. 
+	=#
     if ! consist_chk(S)
         return (false, S)
     end
@@ -287,17 +290,18 @@ function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
     if last_num_holes == 0
         return (true, S)
     else
-        # Recurse by filling in the holes with the smallest number
-        # of potential solutions first, progressing to holes with 
-        # more potential solutions.
-        # This is because the `dict` keys are sorted by length of potential solutions.
-        # NOTE: The code below employs the following heuristic:
-        #       After exhausting all potential solutions for a given hole, `k`,
-        #       we set S[k[1], k[2]] to the last value from `dict[k]`
-        #       and continue on with the next hole.
-        #       It is possible that this will lead to an incorrect solution.
-        #       A final check of the proposed solution is done in 
-        #       the function,`solve_sudoku_file`, which calls this function.
+        #= Recurse by filling in the holes with the smallest number
+           of potential solutions first, progressing to holes with 
+           more potential solutions.
+           This is because the `dict` keys are sorted by length of potential solutions.
+           NOTE: The code below employs the following heuristic:
+                 After exhausting all potential solutions for a given hole, `k`,
+                 we set S[k[1], k[2]] to the last value from `dict[k]`
+                 and continue on with the next hole.
+                 It is possible that this will lead to an incorrect solution.
+                 A final check of the proposed solution is done in 
+                 the function,`solve_sudoku_file`, which calls this function.
+		=#
         for k in keys(dict)
             # For this hole, k, try each of the alternatives.
             for val in collect(dict[k])
@@ -308,9 +312,10 @@ function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
                 if ok
                     return (true, SS)
                 end
-                # Technically, one should set S[k[1], k[2]] = 0.
-                # But this seems to take the solver a very long time
-                # to come up with a proposed solution.
+                #= Technically, one should set S[k[1], k[2]] = 0.
+                   But this seems to take the solver a very long time
+                   to come up with a proposed solution.
+				=#
             end
         end
         # We were unable to find a solution.
@@ -325,13 +330,13 @@ Solves a Sudoku puzzle represented as a matrix.
 
 The value, `0`, is used in a puzzle matrix to represent a blank.
 
-## Arguments
+# Arguments
 - `S::Matrix{Int8}`  -- A Sudoku puzzle matrix.
 
-## Keyword Arguments
+# Keyword Arguments
 - `verbose::Bool=false`    -- If `true`, print out extra information.
 
-## Return 
+# Return 
 (ok, chk_sol, SS) 
 - `ok::Bool`         -- If `true`, a *proposed solution* was found.
 - `chk_sol::Bool`    -- If `true`, the proposed solution is *correct*. 
@@ -357,14 +362,14 @@ The file format is `9` rows of values, `0-9`, with "0" representing a blank.
 
 **NOTE:** The CSV file should not have a *header*.
 
-## Arguments
+# Arguments
 - `puzzle_file_name::AbstractString` -- The puzzle file name without the extension.
 
-## Keyword Arguments 
+# Keyword Arguments 
 - `puzzle_dir=joinpath(@__DIR__, "../puzzles") :: AbstractString` -- The path to the puzzle file directory.
 - `verbose=false :: Bool` -- If `true`, print more output.
 
-## Return
+# Return
 `::Nothing`
 """
 function solve_sudoku_file(puzzle_file_name :: AbstractString                           ; 
