@@ -203,7 +203,7 @@ function solve_sudoku(SP::Matrix{Int8}, rec_count::Int; verbose::Bool=false)
 
     # Check input contract
     if rec_count == 1
-        @assert size(S) == (SUDOKU_SIZE, SUDOKU_SIZE)
+		size(S) == (SUDOKU_SIZE, SUDOKU_SIZE) || throw(DomainError("solve_sudoku: Sudoku puzzle size is not standard."))
         global MAX_RECUR_DEPTH = rec_count
     end
 
@@ -378,8 +378,8 @@ function solve_sudoku_file(puzzle_file_name :: AbstractString                   
     # Read the puzzle -- as a matrix.
     SP = Matrix{Int8}(CSV.read(joinpath(puzzle_dir, puzzle_file_name*".csv"), DataFrames.DataFrame; header=false, types=Int8))
 
-    ## Check input contract -- should be a matrix of size: (SUDOKU_SIZE, SUDOKU_SIZE).
-    @assert size(SP) == (SUDOKU_SIZE, SUDOKU_SIZE)
+    # Check input contract -- should be a matrix of size: (SUDOKU_SIZE, SUDOKU_SIZE).
+	size(SP) == (SUDOKU_SIZE, SUDOKU_SIZE) || throw(DomainError("solve_sudoku_file: Sudoku puzzle size is not standard."))
     println("Sudoku Puzzle:")
     display(SP)
 
@@ -388,7 +388,7 @@ function solve_sudoku_file(puzzle_file_name :: AbstractString                   
 
     # Check the proposed solution.
     if ok && chk_sol
-        ## Check that the proposed solution is correct.
+        # Check that the proposed solution is correct.
         println("\nSOLUTION:")
         display(SS)
     elseif ok # Otherwise, print failure.
