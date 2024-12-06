@@ -147,7 +147,7 @@ Checks the consistency of a Sudoku matrix, `S`.
 This means that we check that there are no (non-zero)
 duplicate entries in any rows, columns, or sub-blocks.
 
-# Argumens
+# Arguments
 - `S::Matrix{Int8}` -- A Sudoku puzzle, proposed solution, or
                        intermediate solution.
 
@@ -160,7 +160,7 @@ function consist_chk(S)
         has_dups(S[i, :]) && return false
     end
 
-    # Check all columsn for non-zero duplicates.
+    # Check all columns for non-zero duplicates.
     for j in 1:SUDOKU_SIZE
         has_dups(S[:, j]) && return false
     end
@@ -355,7 +355,7 @@ end
 """
     solve_sudoku_file(puzzle_file_name; <keyword arguments>])
 
-Solves and prints a solution of a Sudou puzzle file.
+Solves and prints a solution of a Sudoku puzzle file.
 
 The file is the name of a CSV file (without extension).
 The file format is `9` rows of values, `0-9`, with "0" representing a blank.
@@ -399,7 +399,7 @@ function solve_sudoku_file(puzzle_file_name :: AbstractString                   
         display(SS)
     end
 
-    println("\n(MAX_RECUR_DEPTH = $MAX_RECUR_DEPTH)")
+   	println("\n(MAX_RECUR_DEPTH = $MAX_RECUR_DEPTH)")
 
     # Return nothing.
     return(nothing)

@@ -1,7 +1,7 @@
 name = "Sudoku"
 uuid = "455fa021-e593-4146-8f80-178e4578f8f6"
 authors = ["Roland Scott McIntire"]
-version = "1.0.4"
+version = "1.0.5"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
